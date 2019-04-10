@@ -6,7 +6,6 @@ This script scrapes IMDB and outputs a CSV file with highest rated movies.
 """
 
 import csv
-import re
 from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
@@ -47,7 +46,7 @@ def extract_movies(dom):
 
             # Add release year to movie
             for year in movieheader.select("span.lister-item-year"):
-                year = re.sub('[^0-9,.]', '', year.string)
+                year = ''.join(char for char in year.string if char.isdigit())
                 movie.append(year)
 
             # Add list of actors to movie
@@ -63,7 +62,7 @@ def extract_movies(dom):
 
             # Add runtime to movie
             for runtime in item.select("span.runtime"):
-                runtime = re.sub("[^0-9,.]", "", runtime.string)
+                runtime = ''.join(char for char in runtime.string if char.isdigit())
                 movie.append(runtime)
 
         # Add each movie to movie_output
