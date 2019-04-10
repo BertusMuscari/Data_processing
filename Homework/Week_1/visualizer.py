@@ -28,6 +28,22 @@ with open(INPUT_CSV, 'r') as csvfile:
     for key in data_dict:
         data_dict[key] = mean(data_dict[key])
 
+# Make x an y
+y = []
+for key in data_dict:
+    y.append(data_dict[key])
+
+x = []
+for year in range(START_YEAR, END_YEAR):
+    x.append(year)
+
+# Make plot
+plt.plot(x, y)
+plt.ylabel('Mean movie rating')
+plt.xlabel('Year')
+plt.axis([START_YEAR, END_YEAR, 0, 10])
+plt.show()
+
 
 if __name__ == "__main__":
     print(data_dict)
