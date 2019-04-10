@@ -1,4 +1,6 @@
 # Data_processing
 mprog Data Processing
+Machiel Cligge  
+10772006
 
-Folder for Homework and other data processing related stuffs
+http(s)://BertusMuscari.github.io/Data_processing
