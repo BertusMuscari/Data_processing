@@ -34,7 +34,6 @@ def remove_outliers(column_name):
     new_df = df[column_name][df[column_name].between(whisker_low, whisker_high)]
     return new_df
 
-# Convert to Json
 
 if __name__ == "__main__":
     # Remove outliers from data
@@ -42,12 +41,13 @@ if __name__ == "__main__":
     df[pop] = remove_outliers(pop)
     df[mort] = remove_outliers(mort)
 
-    # Central tendency
+    # Central tendency for GDP data
     print("GDP Data\n" +
           f"Mean GDP: {df[gdp].mean()}\n" +
           f"Median GDP: {df[gdp].median()}\n"
           f"Mode GDP: {df[gdp].mode()[0]}\n")
 
+    # Make histogram of GDP
     df.hist(gdp, grid=False)
     plt.show()
 
@@ -60,6 +60,7 @@ if __name__ == "__main__":
           f"Third quartile: {des['75%']}\n" +
           f"Maximum infant mortality (per 1000 births): {des['max']}")
 
+    # Make boxplot of infant mortality
     df.boxplot(mort)
     plt.show()
 
