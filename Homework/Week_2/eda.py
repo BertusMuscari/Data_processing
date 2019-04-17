@@ -43,16 +43,18 @@ if __name__ == "__main__":
     df[mort] = remove_outliers(mort)
 
     # Central tendency
-    print(f"Mean GDP: {df[gdp].mean()}\n" +
-          f"Median GDP: {df[gdp].median()}\n" +
-          f"Mode GDP: {df[gdp].mode()}")
+    print("GDP Data\n" +
+          f"Mean GDP: {df[gdp].mean()}\n" +
+          f"Median GDP: {df[gdp].median()}\n"
+          f"Mode GDP: {df[gdp].mode()[0]}\n")
 
     df.hist(gdp, grid=False)
     plt.show()
 
     # Five number summary of infant mortality
     des = df[mort].describe(percentiles=[.25, .50, .75])
-    print(f"Minimum infant mortality (per 1000 births): {des['min']}\n" +
+    print("Five number summary\n" +
+          f"Minimum infant mortality (per 1000 births): {des['min']}\n" +
           f"First quartile: {des['25%']}\n" +
           f"Second quartile: {des['50%']}\n" +
           f"Third quartile: {des['75%']}\n" +
