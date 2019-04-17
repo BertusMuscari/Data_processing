@@ -65,4 +65,4 @@ if __name__ == "__main__":
     plt.show()
 
     # Make Json file
-    df[['Region', 'Pop. Density (per sq. mi.)', 'GDP ($ per capita) dollars', 'Infant mortality (per 1000 births)']].to_json('output.json', orient='index')
+    df[['Region', 'Pop. Density (per sq. mi.)', 'Infant mortality (per 1000 births)', 'GDP ($ per capita) dollars']].to_json('output.json', orient='index')
