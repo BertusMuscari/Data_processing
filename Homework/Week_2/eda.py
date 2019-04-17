@@ -19,7 +19,7 @@ mort = 'Infant mortality (per 1000 births)'
 
 # Clean dataframe
 df[gdp] = df[gdp].str.strip(' dollars')
-df[gdp] = pd.to_numeric(df[gdp], errors='coerce',downcast='signed')
+df[gdp] = pd.to_numeric(df[gdp], errors='coerce', downcast='signed')
 df['Region'] = df['Region'].str.strip()
 
 def remove_outliers(column_name):
