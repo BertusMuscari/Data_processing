@@ -19,7 +19,7 @@ mort = 'Infant mortality (per 1000 births)'
 
 # Clean dataframe
 df[gdp] = df[gdp].str.strip(' dollars')
-df[gdp] = pd.to_numeric(df[gdp], errors='coerce')
+df[gdp] = pd.to_numeric(df[gdp], errors='coerce',downcast='signed')
 df['Region'] = df['Region'].str.strip()
 
 def remove_outliers(column_name):
@@ -65,4 +65,4 @@ if __name__ == "__main__":
     plt.show()
 
     # Make Json file
-    df[['Region', 'Pop. Density (per sq. mi.)', 'Infant mortality (per 1000 births)', 'GDP ($ per capita) dollars']].to_json('output.json', orient='index')
+    df[['Region', pop, mort, gdp]].to_json('output.json', orient='index')
