@@ -10,9 +10,9 @@
         </script>
         <style>
         .d3-tip {
-        line-height: 1;
+        line-: 1;
         font-weight: bold;
-        padding: 12px;
+        padding: 4px;
         background: rgba(0, 0, 0, 0.8);
         color: #fff;
         border-radius: 2px;
@@ -26,28 +26,35 @@
 
         // Get data and put into SVG
         d3.json("output.json").then(function(data) {
-          // Set width and height for SVG + scaling
-          var w = 1500;
-          var h = 300;
-          var yPadding = 20;
-          var xPadding = 20
+          // Set width and  for SVG + scaling
+          var margin = {top: 0, right: 0, bottom: 20, left: 30};
+          var width = 1500 - margin.left - margin.right,
+              height = 300 - margin.top - margin.bottom;
+
 
           var yScale = d3.scaleLinear()
-                   .domain([0, d3.max(data, function(data) {
+                   .domain([d3.max(data, function(data) {
                      return data["VALUE"];
-                   })])
-                   .range([0, h - yPadding]);
+                   }), 0])
+                   .range([0, height - margin.left]);
+
+          var barScale = d3.scaleLinear()
+                  .domain([0, d3.max(data, function(data) {
+                    return data["VALUE"];
+                  })])
+                  .range([0, height - margin.bottom]);
 
           var xScale = d3.scaleBand()
                   .domain(['AUS','AUT','BEL','DNK','FIN','FRA','GRC','HUN','ISL','IRL','ITA','KOR','LUX','NLD','NZL','NOR','PRT','SVK','ESP','SWE','CHE','USA','BRA','CHL','CHN','EST','IND','IDN','RUS','SVN','ZAF','COL','CRI','LVA','LTU'])
-                  .range([xPadding, w])
+                  .range([margin.left, width])
                   .paddingInner(0.10);
 
-          // Make SVG
-          var svg = d3.select("body")
-                      .append("svg")
-                      .attr("width", w)
-                      .attr("height", h);
+          // // Make SVG
+          var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
           // Create Tooltips
           var tip = d3.tip()
@@ -68,60 +75,55 @@
                return xScale(data["LOCATION"]);
              })
              .attr("y", function(data) {
-               return (h - yPadding) - yScale(data["VALUE"]);
+               return (height - margin.bottom) - barScale(data["VALUE"]);
              })
              .attr("width", function(d) {
                return xScale.bandwidth()
              })
              .attr("height", function(data) {
-               return yScale(data["VALUE"]);
+               return barScale(data["VALUE"]);
              })
-             .attr("fill", "green")
+             .attr("fill", "IndianRed")
              .on('mouseover', tip.show)
              .on('mouseenter', function(d) {
                d3.select(this)
-               .attr("fill", "red")
+               .attr("fill", "DarkRed")
              })
              .on('mouseout', tip.hide)
              .on('mouseleave', function(d) {
                d3.select(this)
-               .attr("fill", "green")
+               .attr("fill", "IndianRed")
              });
 
           // Add label to x-axis
           svg.append("text")
-              .attr("transform","translate(" + (w / 2) + " ," + (h - yPadding) + ")")
+              .attr("transform","translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
               .style("text-anchor", "middle")
               .text("Countries");
-
-          // Adding the x-axis
-          var xAxis = d3.axisBottom(xScale)
-            .ticks(data.lenght);
 
           // Add label to y-axis
           svg.append("text")
               .attr("transform", "rotate(-90)")
-              .attr("y", 0)
-              .attr("x", 0 - (h / 2))
+              .attr("y", - margin.left)
+              .attr("x", 0 - (height / 2))
               .attr("dy", "1em")
               .style("text-anchor", "middle")
-              .text("Percentage of children vaccinated")
+              .text("Children vaccinated (%)")
 
-          // Adding the y - axes
-          var yAxis = d3.axisLeft(yScale)
-            .ticks(11);
-
-          // Call axes
+          // Call y-axes
           svg.append("g")
           .attr("class", "axis")
-          .attr("transform", "translate("+ xPadding + ", )")
-          .call(yAxis);
+          .attr("transform", "translate("+ margin.left + "," + 0 +")")
+          .call(d3.axisLeft(yScale));
 
+          // Call x-axes
           svg.append("g")
             .attr("class", "axis")
-            .attr("transform", "translate(0," + (h - yPadding) + ")")
-            .call(xAxis);
-            svg.call(tip);
+            .attr("transform", "translate(0," + (height - margin.bottom) + ")")
+            .call(d3.axisBottom(xScale));
+
+          // Call tooltips
+          svg.call(tip);
         });
 
         // Add name and data description etc.
