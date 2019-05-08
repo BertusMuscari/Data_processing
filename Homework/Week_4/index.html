@@ -9,11 +9,12 @@
         </script>
         <style type="text/css">
 
-        div.bar {
+        svg.rect {
           display: inline-block;
           width: 20px;
           height: 75px;	/* Gets overriden by D3-assigned height below */
           background-color: teal;
+          margin-right: 2px;
         }
 
         </style>
@@ -23,31 +24,55 @@
         // Add title
         d3.select("body").append("h1").text("Child vaccination rates");
 
-        // Set width and height for SVG
-        var w = 500
-        var h = 50
-
-        // Make SVG
-        var svg = d3.select("body")
-          .append("svg")
-          .attr("width", w)
-          .attr("height", h);
-
         // Get data and put into SVG
         d3.json("output.json").then(function(data) {
             // d3.select("body").selectAll("p").data(data).enter().append("p").text(circle);
             // console.log(data[0]["LOCATION"]);
 
-            d3.select("body").selectAll("div").data(data).enter().append("div").attr("class", "bar").style("height", function(data) {
-    					return data["VALUE"] + "px";
-    			   });
+            // Set width and height for SVG
+            var w = 750;
+            var h = 200;
+            var barPadding = 1;
 
-            // Circles
-            // var bar = svg.selectAll("bar").data(data).enter().append("bar");
+            // Make SVG
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("width", w)
+                        .attr("height", h);
 
-            //bar.attr("cx", 5).attr("cy", h).attr("fill", "black").attr("r", function(data) {
-                 return data["VALUE"]/20;
-            //});
+            svg.selectAll("rect")
+               .data(data)
+               .enter()
+               .append("rect")
+               .attr("x", function(d, i) {
+                 return i * (w / data.length);
+               })
+               .attr("y", function(data) {
+                 return h - (data["VALUE"] * 2);
+               })
+               .attr("width", w / data.length - barPadding)
+               .attr("height", function(data) {
+                 return h;
+               })
+               .attr("fill", "green");
+
+            // Add data to top of bars
+            svg.selectAll("text")
+               .data(data)
+               .enter()
+               .append("text")
+               .text(function(data) {
+                 return data["VALUE"];
+               })
+               .attr("x", function(d, i) {
+                 return i * (w / data.length) + 5;
+               })
+               .attr("y", function(data) {
+                 return h - (data["VALUE"] * 2) + 15;
+               })
+               .attr("font-family", "sans-serif")
+               .attr("font-size", "11px")
+               .attr("fill", "white");
           });
 
           // Add name and data description etc.
