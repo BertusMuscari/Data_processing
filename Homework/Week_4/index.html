@@ -7,17 +7,53 @@
         <script type="text/javascript">
           d3.select("head").append("title").text("Child vaccination rates");
         </script>
+        <style type="text/css">
+
+        div.bar {
+          display: inline-block;
+          width: 20px;
+          height: 75px;	/* Gets overriden by D3-assigned height below */
+          background-color: teal;
+        }
+
+        </style>
     </head>
     <body>
         <script type="text/javascript">
-          d3.json("output.json").then(function(data) {
-            d3.select("body").selectAll("p").data(data).enter().append("p").text(function(d) { return d; });
-            console.log(data[0]);
+        // Add title
+        d3.select("body").append("h1").text("Child vaccination rates");
+
+        // Set width and height for SVG
+        var w = 500
+        var h = 50
+
+        // Make SVG
+        var svg = d3.select("body")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", h);
+
+        // Get data and put into SVG
+        d3.json("output.json").then(function(data) {
+            // d3.select("body").selectAll("p").data(data).enter().append("p").text(circle);
+            // console.log(data[0]["LOCATION"]);
+
+            d3.select("body").selectAll("div").data(data).enter().append("div").attr("class", "bar").style("height", function(data) {
+    					return data["VALUE"] + "px";
+    			   });
+
+            // Circles
+            // var bar = svg.selectAll("bar").data(data).enter().append("bar");
+
+            //bar.attr("cx", 5).attr("cy", h).attr("fill", "black").attr("r", function(data) {
+                 return data["VALUE"]/20;
+            //});
           });
-          d3.select("body").append("h1").text("Child vaccination rates");
+
+          // Add name and data description etc.
+          d3.select("body").append("p").text("All OECD countries have established vaccination programmes based on their interpretation of the risks and benefits of each vaccine. There is strong evidence that vaccines provide safe and effective protection against diseases such as diphtheria, tetanus, pertussis (whooping cough), and measles. Childhood vaccination rates reflect the percentage of children that receive the respective vaccination in the recommended timeframe. The age of complete immunisation differs across countries due to different immunisation schedules. This indicator is presented for measles and for diphtheria, tetanus and pertussis. It is measured as a percentage of children at around age 1.");
           d3.select("body").append("p").text("Machiel Cligge");
           d3.select("body").append("p").text("10772006");
-          d3.select("body").append("p").text("All OECD countries have established vaccination programmes based on their interpretation of the risks and benefits of each vaccine. There is strong evidence that vaccines provide safe and effective protection against diseases such as diphtheria, tetanus, pertussis (whooping cough), and measles. Childhood vaccination rates reflect the percentage of children that receive the respective vaccination in the recommended timeframe. The age of complete immunisation differs across countries due to different immunisation schedules. This indicator is presented for measles and for diphtheria, tetanus and pertussis. It is measured as a percentage of children at around age 1.");
         </script>
     </body>
 </html>
