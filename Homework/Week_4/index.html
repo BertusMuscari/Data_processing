@@ -10,11 +10,9 @@
         </script>
         <style>
         .d3-tip {
-        line-: 1;
-        font-weight: bold;
-        padding: 4px;
         background: rgba(0, 0, 0, 0.8);
-        color: #fff;
+        color: white;
+        padding: 4px;
         border-radius: 2px;
         }
         </style>
@@ -24,44 +22,53 @@
         // Add title
         d3.select("body").append("h1").text("Child vaccination rates");
 
-        // Get data and put into SVG
+        // Add name, Studentnr and data description
+        d3.select("body").append("p").text("All member countries of the Organisation for Economic Co-operation and Development (OECD), have established vaccination programmes based on their interpretation of the risks and benefits of each vaccine. There is strong evidence that vaccines provide safe and effective protection against diseases such as diphtheria, tetanus, pertussis (whooping cough), and measles. Childhood vaccination rates reflect the percentage of children that receive the respective vaccination in the recommended timeframe. The age of complete immunisation differs across countries due to different immunisation schedules. This indicator is presented for diphtheria, tetanus and pertussis. It is measured as a percentage of vaccinated children at around age 1.");
+        d3.select("body").append("p").text("- OECD (2019), Child vaccination rates (indicator). doi: 10.1787/b23c7d13-en (Accessed on 04 May 2019)");
+        d3.select("body").append("p").text("Machiel Cligge");
+        d3.select("body").append("p").text("10772006");
+
+        // Making the graph
         d3.json("output.json").then(function(data) {
           // Set width and  for SVG + scaling
-          var margin = {top: 0, right: 0, bottom: 20, left: 30};
+          var margin = {top: 0, right: 0, bottom: 20, left: 25};
           var width = 1500 - margin.left - margin.right,
               height = 300 - margin.top - margin.bottom;
 
-
           var yScale = d3.scaleLinear()
-                   .domain([d3.max(data, function(data) {
-                     return data["VALUE"];
-                   }), 0])
-                   .range([0, height - margin.left]);
+            .domain([d3.max(data, function(data) {
+              return data["VALUE"];
+            }), 0])
+            .range([0, height - margin.left]);
 
           var barScale = d3.scaleLinear()
-                  .domain([0, d3.max(data, function(data) {
-                    return data["VALUE"];
-                  })])
-                  .range([0, height - margin.bottom]);
+            .domain([0, d3.max(data, function(data) {
+              return data["VALUE"];
+            })])
+            .range([0, height - margin.bottom]);
 
           var xScale = d3.scaleBand()
-                  .domain(['AUS','AUT','BEL','DNK','FIN','FRA','GRC','HUN','ISL','IRL','ITA','KOR','LUX','NLD','NZL','NOR','PRT','SVK','ESP','SWE','CHE','USA','BRA','CHL','CHN','EST','IND','IDN','RUS','SVN','ZAF','COL','CRI','LVA','LTU'])
-                  .range([margin.left, width])
-                  .paddingInner(0.10);
+            .domain(['AUS','AUT','BEL','DNK','FIN','FRA','GRC','HUN',
+            'ISL','IRL','ITA','KOR','LUX','NLD','NZL','NOR','PRT','SVK',
+            'ESP','SWE','CHE','USA','BRA','CHL','CHN','EST','IND','IDN',
+            'RUS','SVN','ZAF','COL','CRI','LVA','LTU'])
+            .range([margin.left, width])
+            .paddingInner(0.10);
 
-          // // Make SVG
+          // Make the SVG
           var svg = d3.select("body").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
 
           // Create Tooltips
           var tip = d3.tip()
             .attr('class', 'd3-tip')
             .offset([-10, 0])
             .html(function(data) {
-              return "Percentage vaccinated children: " + data["VALUE"];
+              return "Vaccinated children: " + data["VALUE"] + "%";
             });
 
           // Add bars to the SVG
@@ -97,24 +104,19 @@
 
           // Add label to x-axis
           svg.append("text")
-              .attr("transform","translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
-              .style("text-anchor", "middle")
-              .text("Countries");
+            .attr("transform",
+                  "translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
+            .style("text-anchor", "middle")
+            .text("Countries");
 
           // Add label to y-axis
           svg.append("text")
-              .attr("transform", "rotate(-90)")
-              .attr("y", - margin.left)
-              .attr("x", 0 - (height / 2))
-              .attr("dy", "1em")
-              .style("text-anchor", "middle")
-              .text("Children vaccinated (%)")
-
-          // Call y-axes
-          svg.append("g")
-          .attr("class", "axis")
-          .attr("transform", "translate("+ margin.left + "," + 0 +")")
-          .call(d3.axisLeft(yScale));
+            .attr("transform", "rotate(-90)")
+            .attr("y", - margin.left)
+            .attr("x", 0 - (height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Vaccinated children (%)")
 
           // Call x-axes
           svg.append("g")
@@ -122,15 +124,15 @@
             .attr("transform", "translate(0," + (height - margin.bottom) + ")")
             .call(d3.axisBottom(xScale));
 
+          // Call y-axes
+          svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate("+ margin.left + "," + 0 +")")
+            .call(d3.axisLeft(yScale));
+
           // Call tooltips
           svg.call(tip);
         });
-
-        // Add name and data description etc.
-        d3.select("body").append("p").text("All member countries of the Organisation for Economic Co-operation and Development (OECD), have established vaccination programmes based on their interpretation of the risks and benefits of each vaccine. There is strong evidence that vaccines provide safe and effective protection against diseases such as diphtheria, tetanus, pertussis (whooping cough), and measles. Childhood vaccination rates reflect the percentage of children that receive the respective vaccination in the recommended timeframe. The age of complete immunisation differs across countries due to different immunisation schedules. This indicator is presented for diphtheria, tetanus and pertussis. It is measured as a percentage of vaccinated children at around age 1.");
-        d3.select("body").append("p").text("- OECD (2019), Child vaccination rates (indicator). doi: 10.1787/b23c7d13-en (Accessed on 04 May 2019)");
-        d3.select("body").append("p").text("Machiel Cligge");
-        d3.select("body").append("p").text("10772006");
         </script>
     </body>
 </html>
